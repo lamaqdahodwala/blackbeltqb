@@ -16,30 +16,6 @@ export const question: QueryResolvers['question'] = ({ id }) => {
   })
 }
 
-export const createQuestion: MutationResolvers['createQuestion'] = ({
-  input,
-}) => {
-  return db.question.create({
-    data: input,
-  })
-}
-
-export const updateQuestion: MutationResolvers['updateQuestion'] = ({
-  id,
-  input,
-}) => {
-  return db.question.update({
-    data: input,
-    where: { id },
-  })
-}
-
-export const deleteQuestion: MutationResolvers['deleteQuestion'] = ({ id }) => {
-  return db.question.delete({
-    where: { id },
-  })
-}
-
 export const Question: QuestionRelationResolvers = {
   masters: (_obj, { root }) => {
     return db.question.findUnique({ where: { id: root?.id } }).masters()
