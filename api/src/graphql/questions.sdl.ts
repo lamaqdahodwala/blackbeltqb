@@ -6,7 +6,6 @@ export const schema = gql`
     category: String!
     setName: String!
     difficulty: Int!
-    masters: [User]!
   }
 
   type Query {
@@ -28,12 +27,5 @@ export const schema = gql`
     category: String
     setName: String
     difficulty: Int
-  }
-
-  type Mutation {
-    createQuestion(input: CreateQuestionInput!): Question! @requireAuth
-    updateQuestion(id: Int!, input: UpdateQuestionInput!): Question!
-      @requireAuth
-    deleteQuestion(id: Int!): Question! @requireAuth
   }
 `
