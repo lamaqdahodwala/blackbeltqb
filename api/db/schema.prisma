@@ -23,5 +23,5 @@ model Question {
   answer String
   category String
   setName String
-  difficulty String
+  difficulty Int
 }
