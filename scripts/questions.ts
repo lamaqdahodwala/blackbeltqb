@@ -23,31 +23,51 @@ interface IQuestion {
   difficulty: number
 }
 export default async ({ args }) => {
+  for (let i = 1; i <= 10; i++) {
+    console.log(`Starting creation for questions at difficulty ${i}`)
+    await fetchQuestionsAndCreateInDB(i)
+    await waitOneSecond()
+  }
+}
+
+const fetchQuestionsAndCreateInDB = async (difficulty: number) => {
   // Your script here...
   // console.log(':: Executing script with args ::')
   // console.log(args)
   //
 
   let data = await fetch(
-    'https://qbreader.org/api/query?questionType=tossup&maxReturnLength=1'
+    `https://qbreader.org/api/query?questionType=tossup&maxReturnLength=10000&difficulties=${difficulty}`
   )
 
   let json = await data.json()
 
   let questions: Array<IQuestion> = json.tossups.questionArray
 
-  questions.forEach(async(question) => {
+  for (let index = 0; index < questions.length; index++) {
+    const element = questions[index];
+
     await db.question.create({
       data: {
-        question: question.question,
-        answer: question.answer,
-        setName: question.setName,
-        category: question.category,
-        difficulty: question.difficulty
+        question: element.question,
+        answer: element.answer,
+        difficulty: element.difficulty,
+        category: element.category,
+        setName: element.setName,
       }
     })
 
-  })
+    await waitMilliseconds(10)
 
-  console.log(questions)
+  }
+  console.log(
+    `Finished adding ${questions.length} questions in difficulty ${difficulty} `
+  )
+}
+async function waitOneSecond() {
+  await waitMilliseconds(1000)
+}
+
+async function waitMilliseconds(millis: number) {
+  await new Promise((resolve) => setTimeout(resolve, millis))
 }
