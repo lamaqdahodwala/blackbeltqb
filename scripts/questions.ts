@@ -57,7 +57,6 @@ const fetchQuestionsAndCreateInDB = async (difficulty: number) => {
       }
     })
 
-    await waitMilliseconds(10)
 
   }
   console.log(
