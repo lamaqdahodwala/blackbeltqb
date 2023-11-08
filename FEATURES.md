@@ -10,6 +10,7 @@ Features:
     - Allow you to replay questions you answered in the past and see if you can get them right
     - Provide a timer element to force you to think quickly
     - Save questions answered to a session, which can then be reviewed later
+    - Can mark questions as "learned", which will determine when you should test yourself
   - This room should not:
     - Count against your mastery of any question. This is just to learn new things and review
 
@@ -17,6 +18,7 @@ Features:
   - This feature can do the following:
     - Augment which questions you have mastered
     - Provide meaningful feedback about your growth over a period of time
+    - Automaticaly recommend when you should test based on how many learned questions you have
 
   - This room should not be:
     - Where you spend most of your time, which should be in Feature 1

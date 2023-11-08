@@ -19,7 +19,8 @@ model User {
   resetToken String?
   resetTokenExpiresAt DateTime?
   skillLevel Int
-  mastered Question[]
+  mastered Question[] @relation(name: "mastered")
+  learned Question[]
 }
 
 model Question {
@@ -29,5 +30,6 @@ model Question {
   category String
   setName String
   difficulty Int
-  masters User[]
+  masters User[] @relation(name: "mastered")
+  learners User[]
 }
