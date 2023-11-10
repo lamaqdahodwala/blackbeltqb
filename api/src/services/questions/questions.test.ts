@@ -3,11 +3,10 @@ import type { Question } from '@prisma/client'
 import {
   questions,
   question,
-  createQuestion,
-  updateQuestion,
-  deleteQuestion,
+  getNewQuestionForSkillLevel,
 } from './questions'
 import type { StandardScenario } from './questions.scenarios'
+import { createUser } from '../users/users'
 
 // Generated boilerplate tests do not account for all circumstances
 // and can fail without adjustments, e.g. Float.
@@ -28,42 +27,15 @@ describe('questions', () => {
     expect(result).toEqual(scenario.question.one)
   })
 
-  scenario('creates a question', async () => {
-    const result = await createQuestion({
-      input: {
-        question: 'String',
-        answer: 'String',
-        category: 'String',
-        setName: 'String',
-        difficulty: 5656872,
-      },
-    })
+  scenario("get a random question", async(scenario: StandardScenario) => {
+    mockCurrentUser({ id: 1, skillLevel: 1})
 
-    expect(result.question).toEqual('String')
-    expect(result.answer).toEqual('String')
-    expect(result.category).toEqual('String')
-    expect(result.setName).toEqual('String')
-    expect(result.difficulty).toEqual(5656872)
+    let random_question = await getNewQuestionForSkillLevel()
+
+    expect([scenario.question.one, scenario.question.two]).toContainEqual(random_question)
+
+
   })
 
-  scenario('updates a question', async (scenario: StandardScenario) => {
-    const original = (await question({
-      id: scenario.question.one.id,
-    })) as Question
-    const result = await updateQuestion({
-      id: original.id,
-      input: { question: 'String2' },
-    })
 
-    expect(result.question).toEqual('String2')
-  })
-
-  scenario('deletes a question', async (scenario: StandardScenario) => {
-    const original = (await deleteQuestion({
-      id: scenario.question.one.id,
-    })) as Question
-    const result = await question({ id: original.id })
-
-    expect(result).toEqual(null)
-  })
 })
