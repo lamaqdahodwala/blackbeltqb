@@ -3,7 +3,8 @@ export const schema = gql`
     id: Int!
     username: String!
     skillLevel: Int!
-    mastered: [Question]!
+    mastered: [Question!]!
+    learned: [Question!]!
   }
 
   type Query {
