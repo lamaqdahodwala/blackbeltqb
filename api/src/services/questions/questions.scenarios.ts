@@ -10,35 +10,38 @@ export const standard = defineScenario<Prisma.QuestionCreateArgs | Prisma.UserCr
         hashedPassword: "feiow",
         salt: "feiow3jg",
         id: 1,
-      }
+        learned: {
+          create: {
+            id: 3,
+            question: "String",
+            answer: "string",
+            category: "String",
+            setName: "String",
+            difficulty: 1
+          }
+        }
+      },
     }
   },
   question: {
-    one: {
+    one:  {
       data: {
+        id: 1,
         question: 'String',
         answer: 'String',
         category: 'String',
         setName: 'String',
         difficulty: 1,
-      },
+      }
     },
     two: {
       data: {
+        id: 2,
         question: 'String',
         answer: 'String',
         category: 'String',
         setName: 'String',
         difficulty: 1,
-      },
-    },
-    three: {
-      data: {
-        question: 'String',
-        answer: 'String',
-        category: 'String',
-        setName: 'String',
-        difficulty: 2,
       },
     },
   },

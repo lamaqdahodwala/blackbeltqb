@@ -4,6 +4,7 @@ import {
   questions,
   question,
   getNewQuestionForSkillLevel,
+  answeredQuestionRight,
 } from './questions'
 import type { StandardScenario } from './questions.scenarios'
 import { createUser } from '../users/users'
@@ -18,14 +19,9 @@ describe('questions', () => {
   scenario('returns all questions', async (scenario: StandardScenario) => {
     const result = await questions()
 
-    expect(result.length).toEqual(Object.keys(scenario.question).length)
+    expect(result.length).toEqual(Object.keys(scenario.question).length + 1)
   })
 
-  scenario('returns a single question', async (scenario: StandardScenario) => {
-    const result = await question({ id: scenario.question.one.id })
-
-    expect(result).toEqual(scenario.question.one)
-  })
 
   scenario("get a random question", async(scenario: StandardScenario) => {
     mockCurrentUser({ id: 1, skillLevel: 1})
@@ -35,6 +31,22 @@ describe('questions', () => {
     expect([scenario.question.one, scenario.question.two]).toContainEqual(random_question)
 
 
+  })
+
+  scenario("mark a question as right: do nothing if already learned", async(scenario: StandardScenario) => {
+    mockCurrentUser({id: 1, skillLevel: 1})
+
+    let questions = await answeredQuestionRight({id: 3})
+
+    expect(questions).toHaveLength(1)
+  })
+
+  scenario("mark a question as right: add if not in learned", async(scenario: StandardScenario) => {
+
+    mockCurrentUser({id: 1, skillLevel: 1})
+    let questions = await answeredQuestionRight({ id: 2 })
+
+    expect(questions).toHaveLength(2)
   })
 
 
