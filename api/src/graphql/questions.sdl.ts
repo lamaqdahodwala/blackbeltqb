@@ -6,13 +6,14 @@ export const schema = gql`
     category: String!
     setName: String!
     difficulty: Int!
+    masters: [User]!
+    learners: [User]!
   }
 
   type Query {
     questions: [Question!]! @requireAuth
     question(id: Int!): Question @requireAuth
-    getNewQuestionForSkillLevel: Question! @requireAuth
-    answeredQuestionRight($id: Int!): [ Question! ]! @requireAuth
+    getNewQuestionForSkillLevel(): Question! @requireAuth
   }
 
   input CreateQuestionInput {
