@@ -22,10 +22,10 @@ returns the percentile that the current signed in user is relating to their aver
 TRAINING:
 
 
-getRandomQuestionOnSkillLevel(): Question
+DONE getRandomQuestionOnSkillLevel(): Question
 returns a random question that the user has not seen before
 
-addQuestionToLearned(id: number): [Question]
+DONE addQuestionToLearned(id: number): [Question]
 adds a question with a specified id to the user's learned list, returning the new list
 
 

@@ -1,6 +1,6 @@
 import type { Question } from '@prisma/client'
 
-import { questions, question, getNewQuestionForSkillLevel } from './questions'
+import { questions, question, getNewQuestionForSkillLevel, addQuestionToLearned } from './questions'
 import type { StandardScenario } from './questions.scenarios'
 
 // Generated boilerplate tests do not account for all circumstances
@@ -43,4 +43,17 @@ describe('questions', () => {
       }
     }
   )
+})
+
+describe("addQuestionToLearned", () => {
+  scenario("adds a question to learned that wasn't there before", async() => {
+    mockCurrentUser({id: 1})
+    let result = await addQuestionToLearned({id: 1})
+    expect(result.length).toEqual(2)
+  })
+  scenario("does not add a question that already is learned", async() => {
+    mockCurrentUser({id: 1})
+    let result = await addQuestionToLearned({id: 3})
+    expect(result.length).toEqual(1)
+  })
 })

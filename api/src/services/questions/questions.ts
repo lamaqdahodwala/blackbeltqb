@@ -16,33 +16,67 @@ export const question: QueryResolvers['question'] = ({ id }) => {
   })
 }
 
-export const getNewQuestionForSkillLevel: QueryResolvers['getNewQuestionForSkillLevel'] = async() => {
-  let user_id = context.currentUser.id
+export const getNewQuestionForSkillLevel: QueryResolvers['getNewQuestionForSkillLevel'] =
+  async () => {
+    let user_id = context.currentUser.id
 
-  let user = await db.user.findUnique({
-    where: {
-      id: user_id
-    },
-    include: {
-      learned: true
-    }
-  })
+    let user = await db.user.findUnique({
+      where: {
+        id: user_id,
+      },
+      include: {
+        learned: true,
+      },
+    })
 
-  let user_learned_questions_ids = user.learned.map((val) => val.id)
+    let user_learned_questions_ids = user.learned.map((val) => val.id)
 
+    let question = await db.question.findMany({
+      where: {
+        difficulty: user.skillLevel,
+        id: {
+          notIn: user_learned_questions_ids,
+        },
+      },
+    })
 
-  let question = await db.question.findMany({
-    where: {
-      difficulty: user.skillLevel,
-      id: {
-        notIn: user_learned_questions_ids
+    let random_index = Math.floor(Math.random() * question.length)
+    return question[random_index]
+  }
+
+export const addQuestionToLearned: MutationResolvers['addQuestionToLearned'] =
+  async ({ id }) => {
+    let user_id = context.currentUser.id
+    let user = await db.user.findUnique({
+      where: {
+        id: user_id,
+      },
+      include: {
+        learned: true,
+      },
+    })
+
+    let user_learned_questions_ids = user.learned.map((val) => val.id)
+
+    if (user_learned_questions_ids.includes(id)) return user.learned
+
+    let new_user = await db.user.update({
+      where: {
+        id: id,
+      },
+      data: {
+        learned: {
+          connect: {
+            id: id
+          },
+        },
+      },
+      include: {
+        learned: true
       }
-    },
-  })
-
-  let random_index = Math.floor(Math.random() * question.length)
-  return question[random_index]
-}
+    })
+    return new_user.learned
+  }
 
 export const Question: QuestionRelationResolvers = {
   masters: (_obj, { root }) => {

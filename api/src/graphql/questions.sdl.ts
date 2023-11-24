@@ -14,6 +14,7 @@ export const schema = gql`
     questions: [Question!]! @requireAuth
     question(id: Int!): Question @requireAuth
     getNewQuestionForSkillLevel(): Question! @requireAuth
+    addQuestionToLearned(id: Int!): [Question!]! @requireAuth
   }
 
   input CreateQuestionInput {
