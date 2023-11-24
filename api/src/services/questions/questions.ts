@@ -78,6 +78,24 @@ export const addQuestionToLearned: MutationResolvers['addQuestionToLearned'] =
     return new_user.learned
   }
 
+  export const canUserTest: QueryResolvers['canUserTest'] = async () => {
+    let user_id = context.currentUser.id
+    let user = await db.user.findUnique({
+      where: {
+        id: user_id
+      },
+      select: {
+        _count: {
+          select: {
+            learned: true
+          }
+        }
+      }
+    })
+
+    return user._count.learned === 5 ? true : false
+  }
+
 export const Question: QuestionRelationResolvers = {
   masters: (_obj, { root }) => {
     return db.question.findUnique({ where: { id: root?.id } }).masters()

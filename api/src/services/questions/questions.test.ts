@@ -1,6 +1,6 @@
 import type { Question } from '@prisma/client'
 
-import { questions, question, getNewQuestionForSkillLevel, addQuestionToLearned } from './questions'
+import { questions, question, getNewQuestionForSkillLevel, addQuestionToLearned, canUserTest } from './questions'
 import type { StandardScenario } from './questions.scenarios'
 
 // Generated boilerplate tests do not account for all circumstances
@@ -55,5 +55,13 @@ describe("addQuestionToLearned", () => {
     mockCurrentUser({id: 1})
     let result = await addQuestionToLearned({id: 3})
     expect(result.length).toEqual(1)
+  })
+})
+
+describe("canUserTest", () => {
+  scenario("checks if you have enough learned questions to take a test", async(scenario: StandardScenario) => {
+    mockCurrentUser({id: 1})
+    let result = await canUserTest()
+    expect(result).toBe(false)
   })
 })
