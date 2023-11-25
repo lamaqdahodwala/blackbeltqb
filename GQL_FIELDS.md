@@ -35,7 +35,7 @@ Testing:
 DONE canUserTest(): Boolean
 returns whether or not the user can test for mastery (based on the length of the learned list)
 
-createTestQuestions(): [Question]
+DONE createTestQuestions(): [Question]
 returns a list of questions that would be used for a mastery test. This list of questions is based on questions that the user learned, which relate back to the original questions by either the same answer, or one of the details from the learned questions is the answer
 
 testSubmit(record: Record): [ Changes ]
