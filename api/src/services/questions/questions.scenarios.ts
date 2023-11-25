@@ -14,7 +14,7 @@ export const standard = defineScenario<Prisma.QuestionCreateArgs | Prisma.UserCr
           create: {
             question: "yadda yadda yadda",
             difficulty: 1,
-            answer: "wow you got it",
+            answer: "The Magic Flute",
             category: "string",
             setName: "string",
             id: 3
@@ -27,7 +27,7 @@ export const standard = defineScenario<Prisma.QuestionCreateArgs | Prisma.UserCr
     one: {
       data: {
         question: 'String',
-        answer: 'String',
+        answer: 'The Magic Flute [accept whatever else you want]',
         category: 'String',
         setName: 'String',
         difficulty: 1,
@@ -37,7 +37,7 @@ export const standard = defineScenario<Prisma.QuestionCreateArgs | Prisma.UserCr
     two: {
       data: {
         question: 'String',
-        answer: 'String',
+        answer: 'flute',
         category: 'String',
         setName: 'String',
         difficulty: 2,

@@ -32,7 +32,7 @@ adds a question with a specified id to the user's learned list, returning the ne
 Testing:
 
 
-canUserTest(): Boolean
+DONE canUserTest(): Boolean
 returns whether or not the user can test for mastery (based on the length of the learned list)
 
 createTestQuestions(): [Question]

@@ -67,33 +67,80 @@ export const addQuestionToLearned: MutationResolvers['addQuestionToLearned'] =
       data: {
         learned: {
           connect: {
-            id: id
+            id: id,
           },
         },
       },
       include: {
-        learned: true
-      }
+        learned: true,
+      },
     })
     return new_user.learned
   }
 
-  export const canUserTest: QueryResolvers['canUserTest'] = async () => {
+export const canUserTest: QueryResolvers['canUserTest'] = async () => {
+  let user_id = context.currentUser.id
+  let user = await db.user.findUnique({
+    where: {
+      id: user_id,
+    },
+    select: {
+      _count: {
+        select: {
+          learned: true,
+        },
+      },
+    },
+  })
+
+  return user._count.learned === 5 ? true : false
+}
+
+export const getTestingQuestions: QueryResolvers['getTestingQuestions'] =
+  async () => {
     let user_id = context.currentUser.id
     let user = await db.user.findUnique({
       where: {
-        id: user_id
+        id: user_id,
       },
-      select: {
-        _count: {
+      include: {
+        learned: {
           select: {
-            learned: true
-          }
-        }
-      }
+            id: true,
+            answer: true,
+          },
+        },
+      },
     })
+    let test = []
+    for (let index = 0; index < user.learned.length; index++) {
+      const answer = user.learned[index].answer
 
-    return user._count.learned === 5 ? true : false
+      let possible_questions = await db.question.findMany({
+        where: {
+          AND: [
+            {
+              answer: {
+                contains: answer,
+              },
+            },
+            {
+              id: {
+                notIn: user.learned.map((val) => val.id)
+              }
+            }
+          ],
+        },
+      })
+
+      let random_index = Math.floor(Math.random() * possible_questions.length)
+
+      let random_question = possible_questions[random_index]
+
+      test.push(random_question)
+    }
+
+    return test
   }
 
 export const Question: QuestionRelationResolvers = {

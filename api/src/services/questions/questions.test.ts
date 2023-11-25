@@ -1,6 +1,6 @@
 import type { Question } from '@prisma/client'
 
-import { questions, question, getNewQuestionForSkillLevel, addQuestionToLearned, canUserTest } from './questions'
+import { questions, question, getNewQuestionForSkillLevel, addQuestionToLearned, canUserTest, getTestingQuestions } from './questions'
 import type { StandardScenario } from './questions.scenarios'
 
 // Generated boilerplate tests do not account for all circumstances
@@ -65,3 +65,12 @@ describe("canUserTest", () => {
     expect(result).toBe(false)
   })
 })
+
+describe("getTestingQuestions", () => {
+  scenario("gets a question that contains an answer from one of your learned", async(scenario: StandardScenario) => {
+    mockCurrentUser({id: 1})
+    let result = await getTestingQuestions()
+    expect(result).toEqual([ scenario.question.one ])
+  })
+})
+
