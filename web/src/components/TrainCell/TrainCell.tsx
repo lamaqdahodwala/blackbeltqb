@@ -3,7 +3,7 @@ import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
 
 export const QUERY = gql`
   query FindTrainQuery {
-    train: questions {
+    train: getNewQuestionForSkillLevel {
       id
     }
   }
