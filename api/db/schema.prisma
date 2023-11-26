@@ -18,7 +18,7 @@ model User {
   salt String
   resetToken String?
   resetTokenExpiresAt DateTime?
-  skillLevel Int
+  skillLevel Int @default(1)
   mastered Question[] @relation(name: "mastered")
   learned Question[]
 }
