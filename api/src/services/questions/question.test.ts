@@ -1,7 +1,7 @@
 import type { Question } from '@prisma/client'
 
-import { questions, question, getNewQuestionForSkillLevel, addQuestionToLearned, canUserTest, getTestingQuestions } from './questions'
-import type { StandardScenario } from './questions.scenarios'
+import { questions, question, getNewQuestionForSkillLevel, addQuestionToLearned, canUserTest, getTestingQuestions } from './question'
+import type { StandardScenario } from './question.scenarios'
 
 // Generated boilerplate tests do not account for all circumstances
 // and can fail without adjustments, e.g. Float.

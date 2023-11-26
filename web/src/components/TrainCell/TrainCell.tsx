@@ -2,8 +2,8 @@ import type { FindTrainQuery, FindTrainQueryVariables } from 'types/graphql'
 import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
 
 export const QUERY = gql`
-  query FindTrainQuery($id: Int!) {
-    train: train(id: $id) {
+  query FindTrainQuery {
+    train: questions {
       id
     }
   }
