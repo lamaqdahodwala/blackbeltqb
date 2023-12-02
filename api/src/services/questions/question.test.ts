@@ -1,7 +1,16 @@
 import type { Question } from '@prisma/client'
 
-import { questions, question, getNewQuestionForSkillLevel, addQuestionToLearned, canUserTest, getTestingQuestions } from './question'
+import {
+  questions,
+  question,
+  getNewQuestionForSkillLevel,
+  addQuestionToLearned,
+  canUserTest,
+  getTestingQuestions,
+  testSubmit,
+} from './question'
 import type { StandardScenario } from './question.scenarios'
+import { db } from 'src/lib/db'
 
 // Generated boilerplate tests do not account for all circumstances
 // and can fail without adjustments, e.g. Float.
@@ -45,32 +54,100 @@ describe('questions', () => {
   )
 })
 
-describe("addQuestionToLearned", () => {
-  scenario("adds a question to learned that wasn't there before", async() => {
-    mockCurrentUser({id: 1})
-    let result = await addQuestionToLearned({id: 1})
+describe('addQuestionToLearned', () => {
+  scenario("adds a question to learned that wasn't there before", async () => {
+    mockCurrentUser({ id: 1 })
+    let result = await addQuestionToLearned({ id: 1 })
     expect(result.length).toEqual(2)
   })
-  scenario("does not add a question that already is learned", async() => {
-    mockCurrentUser({id: 1})
-    let result = await addQuestionToLearned({id: 3})
+  scenario('does not add a question that already is learned', async () => {
+    mockCurrentUser({ id: 1 })
+    let result = await addQuestionToLearned({ id: 3 })
     expect(result.length).toEqual(1)
   })
 })
 
-describe("canUserTest", () => {
-  scenario("checks if you have enough learned questions to take a test", async(scenario: StandardScenario) => {
-    mockCurrentUser({id: 1})
-    let result = await canUserTest()
-    expect(result).toBe(false)
-  })
+describe('canUserTest', () => {
+  scenario(
+    'checks if you have enough learned questions to take a test',
+    async (scenario: StandardScenario) => {
+      mockCurrentUser({ id: 1 })
+      let result = await canUserTest()
+      expect(result).toBe(false)
+    }
+  )
 })
 
-describe("getTestingQuestions", () => {
-  scenario("gets a question that contains an answer from one of your learned", async(scenario: StandardScenario) => {
-    mockCurrentUser({id: 1})
-    let result = await getTestingQuestions()
-    expect(result).toEqual([ scenario.question.one ])
-  })
+describe('getTestingQuestions', () => {
+  scenario(
+    'gets a question that contains an answer from one of your learned',
+    async (scenario: StandardScenario) => {
+      mockCurrentUser({ id: 1 })
+      let result = await getTestingQuestions()
+      expect(result).toEqual([scenario.question.one])
+    }
+  )
 })
 
+describe('testSubmit', () => {
+  scenario(
+    'can move learned questions answered correctly into mastered',
+    async (scenario) => {
+      mockCurrentUser({ id: 1 })
+      let result = await testSubmit({
+        record: [
+          {
+            question_id: 3,
+            gotCorrect: true,
+          },
+        ],
+      })
+      expect(result).toHaveLength(1)
+      expect(result[0]).toHaveProperty('movedTo')
+
+
+      let user = await db.user.findUnique({
+        where: {
+          id: 1
+        },
+        include: {
+          learned: true,
+          mastered: true
+        }
+      })
+
+      expect(user.learned).toHaveLength(0)
+      expect(user.mastered).toHaveLength(1)
+    }
+  )
+})
+scenario("does not move questions answered incorrectly", async(scenario) => {
+  mockCurrentUser({id: 1})
+  let result = await testSubmit({record: [
+    {
+      question_id: 3,
+      gotCorrect: false
+    },
+    {
+      question_id: 1,
+      gotCorrect: true
+    }
+  ]})
+
+  expect(result).toHaveLength(1)
+  expect(result[0]).toHaveProperty("question_id")
+  expect(result[0]).toHaveProperty("movedTo")
+
+  let user = await db.user.findUnique({
+    where: {
+      id: 1
+    },
+    include: {
+      learned: true,
+      mastered: true
+    }
+  })
+
+  expect(user.learned).toHaveLength(1)
+  expect(user.mastered).toHaveLength(1)
+})

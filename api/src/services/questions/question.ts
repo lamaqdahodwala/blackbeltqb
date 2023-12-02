@@ -126,9 +126,9 @@ export const getTestingQuestions: QueryResolvers['getTestingQuestions'] =
             },
             {
               id: {
-                notIn: user.learned.map((val) => val.id)
-              }
-            }
+                notIn: user.learned.map((val) => val.id),
+              },
+            },
           ],
         },
       })
@@ -142,6 +142,49 @@ export const getTestingQuestions: QueryResolvers['getTestingQuestions'] =
 
     return test
   }
+
+export const testSubmit: MutationResolvers['testSubmit'] = async({ record }) => {
+  let user_id = context.currentUser.id
+  let user = await db.user.findUnique({
+    where: {
+      id: user_id,
+    },
+    include: {
+      learned: true,
+    },
+  })
+
+  let changes = []
+  for (let index = 0; index < record.length; index++) {
+    const question_turned_in = record[index];
+
+    if (question_turned_in.gotCorrect) {
+      changes.push({
+        question_id: question_turned_in.question_id,
+        movedTo: "mastered"
+      })
+      await db.user.update({
+        where: {
+          id: user_id
+        },
+        data: {
+          learned: {
+            disconnect: {
+              id: question_turned_in.question_id
+            }
+          },
+          mastered: {
+            connect: {
+              id: question_turned_in.question_id
+            }
+          }
+        }
+      })
+    }
+  }
+  return changes
+}
+
 
 export const Question: QuestionRelationResolvers = {
   masters: (_obj, { root }) => {

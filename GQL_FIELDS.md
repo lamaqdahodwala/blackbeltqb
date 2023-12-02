@@ -17,6 +17,9 @@ returns the percentage of questionst hat the signed in user has mastered in a ce
 getPPGPercentile(): Number
 returns the percentile that the current signed in user is relating to their average points per game, compared to other users in the same difficulty level
 
+recordStatsForSim(stats: Stats): Stats
+takes in the stats for a competition session, saves it, and echoes it back
+
 
 
 TRAINING:

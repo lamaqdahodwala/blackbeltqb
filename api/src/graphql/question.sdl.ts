@@ -19,6 +19,20 @@ export const schema = gql`
     getTestingQuestions: [Question!]! @requireAuth
   }
 
+  input Record {
+    question_id: Int!
+    gotCorrect: Boolean!
+  }
+
+  type TestChange {
+    question_id: Int!
+    moved_to: String
+  }
+
+  type Mutation {
+    testSubmit(record: [Record!]!): [TestChange!]! @requireAuth
+  }
+
   input CreateQuestionInput {
     question: String!
     answer: String!
