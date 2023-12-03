@@ -162,5 +162,9 @@ describe("getPercentMastered", () => {
     expect(result).toEqual(33.3)
   })
 
-  // scenario('calculate the proper ratio of a specified diff')
+  scenario('calculate the proper ratio of a specified diff', async(scenario) => {
+    mockCurrentUser({id: 1})
+    let result = await getPercentMastery({difficulty: 2})
+    expect(result).toEqual(0)
+  })
 })
