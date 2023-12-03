@@ -2,7 +2,7 @@
 A list of required Graphql resolvers and a description of their input and output
 
 
-DONE getUserLearned(): [Question]
+getUserLearned(): [Question]
 returns the learned questions for the signed in account
 
 
