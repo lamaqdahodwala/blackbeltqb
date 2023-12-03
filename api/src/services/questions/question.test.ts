@@ -105,49 +105,50 @@ describe('testSubmit', () => {
       expect(result).toHaveLength(1)
       expect(result[0]).toHaveProperty('movedTo')
 
-
       let user = await db.user.findUnique({
         where: {
-          id: 1
+          id: 1,
         },
         include: {
           learned: true,
-          mastered: true
-        }
+          mastered: true,
+        },
       })
 
       expect(user.learned).toHaveLength(0)
       expect(user.mastered).toHaveLength(1)
     }
   )
-})
-scenario("does not move questions answered incorrectly", async(scenario) => {
-  mockCurrentUser({id: 1})
-  let result = await testSubmit({record: [
-    {
-      question_id: 3,
-      gotCorrect: false
-    },
-    {
-      question_id: 1,
-      gotCorrect: true
-    }
-  ]})
+  scenario('does not move questions answered incorrectly', async (scenario) => {
+    mockCurrentUser({ id: 1 })
+    let result = await testSubmit({
+      record: [
+        {
+          question_id: 3,
+          gotCorrect: false,
+        },
+        {
+          question_id: 1,
+          gotCorrect: true,
+        },
+      ],
+    })
 
-  expect(result).toHaveLength(1)
-  expect(result[0]).toHaveProperty("question_id")
-  expect(result[0]).toHaveProperty("movedTo")
+    expect(result).toHaveLength(1)
+    expect(result[0]).toHaveProperty('question_id')
+    expect(result[0]).toHaveProperty('movedTo')
 
-  let user = await db.user.findUnique({
-    where: {
-      id: 1
-    },
-    include: {
-      learned: true,
-      mastered: true
-    }
+    let user = await db.user.findUnique({
+      where: {
+        id: 1,
+      },
+      include: {
+        learned: true,
+        mastered: true,
+      },
+    })
+
+    expect(user.learned).toHaveLength(1)
+    expect(user.mastered).toHaveLength(1)
   })
-
-  expect(user.learned).toHaveLength(1)
-  expect(user.mastered).toHaveLength(1)
 })
