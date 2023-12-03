@@ -8,6 +8,7 @@ import {
   canUserTest,
   getTestingQuestions,
   testSubmit,
+  getPercentMastery,
 } from './question'
 import type { StandardScenario } from './question.scenarios'
 import { db } from 'src/lib/db'
@@ -18,7 +19,7 @@ import { db } from 'src/lib/db'
 //       https://redwoodjs.com/docs/testing#testing-services
 // https://redwoodjs.com/docs/testing#jest-expect-type-considerations
 
-const TOTAL_NUMBER_OF_QUESTIONS = 3
+const TOTAL_NUMBER_OF_QUESTIONS = 4
 describe('questions', () => {
   scenario('returns all questions', async (scenario: StandardScenario) => {
     const result = await questions()
@@ -116,7 +117,7 @@ describe('testSubmit', () => {
       })
 
       expect(user.learned).toHaveLength(0)
-      expect(user.mastered).toHaveLength(1)
+      expect(user.mastered).toHaveLength(2)
     }
   )
   scenario('does not move questions answered incorrectly', async (scenario) => {
@@ -149,6 +150,17 @@ describe('testSubmit', () => {
     })
 
     expect(user.learned).toHaveLength(1)
-    expect(user.mastered).toHaveLength(1)
+    expect(user.mastered).toHaveLength(2)
   })
+})
+
+describe("getPercentMastered", () => {
+  scenario("calculates the proper ratio without a specified diff", async(scenario) => {
+    mockCurrentUser({id: 1})
+    let result = await getPercentMastery({})
+
+    expect(result).toEqual(33.3)
+  })
+
+  // scenario('calculate the proper ratio of a specified diff')
 })

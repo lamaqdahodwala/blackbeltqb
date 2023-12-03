@@ -19,6 +19,16 @@ export const standard = defineScenario<Prisma.QuestionCreateArgs | Prisma.UserCr
             setName: "string",
             id: 3
           }
+        },
+        mastered: {
+          create: {
+            question: "yadda yadda yadda",
+            difficulty: 1,
+            answer: "Ride of the Valkyries",
+            category: "string",
+            setName: "string",
+            id: 4
+          }
         }
       }
     }

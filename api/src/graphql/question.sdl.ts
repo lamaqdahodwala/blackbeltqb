@@ -14,9 +14,10 @@ export const schema = gql`
     questions: [Question!]! @requireAuth
     question(id: Int!): Question @requireAuth
     getNewQuestionForSkillLevel: Question! @requireAuth
-    addQuestionToLearned(id: Int!): [Question!]! @requireAuth
     canUserTest: Boolean! @requireAuth
     getTestingQuestions: [Question!]! @requireAuth
+    getPercentMastery(difficulty: Int): Float! @requireAuth
+    getUserLearned: [Question!]! @requireAuth
   }
 
   input Record {
@@ -31,6 +32,7 @@ export const schema = gql`
 
   type Mutation {
     testSubmit(record: [Record!]!): [TestChange!]! @requireAuth
+    addQuestionToLearned(id: Int!): [Question!]! @requireAuth
   }
 
   input CreateQuestionInput {

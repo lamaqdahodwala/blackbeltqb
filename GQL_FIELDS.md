@@ -2,7 +2,7 @@
 A list of required Graphql resolvers and a description of their input and output
 
 
-getUserLearned(): [Question]
+DONE getUserLearned(): [Question]
 returns the learned questions for the signed in account
 
 
@@ -41,7 +41,7 @@ returns whether or not the user can test for mastery (based on the length of the
 DONE createTestQuestions(): [Question]
 returns a list of questions that would be used for a mastery test. This list of questions is based on questions that the user learned, which relate back to the original questions by either the same answer, or one of the details from the learned questions is the answer
 
-testSubmit(record: Record): [ Changes ]
+DONE testSubmit(record: Record): [ Changes ]
 submit a mastery test, where the user's correctness is specified in the record. Returns an array of Changes, showing which questions, if any, were moved to the mastered class
 
 

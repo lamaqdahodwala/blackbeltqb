@@ -16,6 +16,55 @@ export const question: QueryResolvers['question'] = ({ id }) => {
   })
 }
 
+export const getUserLearned: QueryResolvers['getUserLearned'] = () => {
+  return db.user
+    .findUnique({
+      where: {
+        id: context.currentUser.id,
+      },
+      include: {
+        learned: true,
+      },
+    })
+    .learned()
+}
+
+export const getPercentMastery: QueryResolvers['getPercentMastery'] = async ({ difficulty }) => {
+  let user_skill = await db.user.findUnique({
+    where: {
+      id: context.currentUser.id,
+    },
+  })
+
+  let skill = difficulty ? difficulty : user_skill.skillLevel
+
+  let user = await db.user.findUnique({
+    where: {
+      id: context.currentUser.id
+    },
+    include: {
+      _count: {
+        select: {
+          mastered: {
+            where: {
+              difficulty: skill
+            }
+          }
+        }
+      }
+    }
+  })
+
+  let total_number = await db.question.count({
+    where: {
+      difficulty: skill
+    },
+  })
+
+  let percentage_rounded = ( ( user._count.mastered / total_number ) * 100 ).toFixed(1)
+  return Number(percentage_rounded)
+}
+
 export const getNewQuestionForSkillLevel: QueryResolvers['getNewQuestionForSkillLevel'] =
   async () => {
     let user_id = context.currentUser.id
@@ -26,16 +75,18 @@ export const getNewQuestionForSkillLevel: QueryResolvers['getNewQuestionForSkill
       },
       include: {
         learned: true,
+        mastered: true
       },
     })
 
     let user_learned_questions_ids = user.learned.map((val) => val.id)
+    let user_mastered_question_ids = user.mastered.map((val) => val.id)
 
     let question = await db.question.findMany({
       where: {
         difficulty: user.skillLevel,
         id: {
-          notIn: user_learned_questions_ids,
+          notIn: [...user_learned_questions_ids, ...user_mastered_question_ids],
         },
       },
     })
@@ -143,7 +194,9 @@ export const getTestingQuestions: QueryResolvers['getTestingQuestions'] =
     return test
   }
 
-export const testSubmit: MutationResolvers['testSubmit'] = async({ record }) => {
+export const testSubmit: MutationResolvers['testSubmit'] = async ({
+  record,
+}) => {
   let user_id = context.currentUser.id
   let user = await db.user.findUnique({
     where: {
@@ -156,35 +209,34 @@ export const testSubmit: MutationResolvers['testSubmit'] = async({ record }) => 
 
   let changes = []
   for (let index = 0; index < record.length; index++) {
-    const question_turned_in = record[index];
+    const question_turned_in = record[index]
 
     if (question_turned_in.gotCorrect) {
       changes.push({
         question_id: question_turned_in.question_id,
-        movedTo: "mastered"
+        movedTo: 'mastered',
       })
       await db.user.update({
         where: {
-          id: user_id
+          id: user_id,
         },
         data: {
           learned: {
             disconnect: {
-              id: question_turned_in.question_id
-            }
+              id: question_turned_in.question_id,
+            },
           },
           mastered: {
             connect: {
-              id: question_turned_in.question_id
-            }
-          }
-        }
+              id: question_turned_in.question_id,
+            },
+          },
+        },
       })
     }
   }
   return changes
 }
-
 
 export const Question: QuestionRelationResolvers = {
   masters: (_obj, { root }) => {
