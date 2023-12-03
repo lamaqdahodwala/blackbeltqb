@@ -16,8 +16,8 @@ export const question: QueryResolvers['question'] = ({ id }) => {
   })
 }
 
-export const getUserLearned: QueryResolvers['getUserLearned'] = () => {
-  return db.user
+export const getUserLearned: QueryResolvers['getUserLearned'] = async() => {
+  let user = await db.user
     .findUnique({
       where: {
         id: context.currentUser.id,
@@ -26,7 +26,7 @@ export const getUserLearned: QueryResolvers['getUserLearned'] = () => {
         learned: true,
       },
     })
-    .learned()
+  return user.learned
 }
 
 export const getPercentMastery: QueryResolvers['getPercentMastery'] = async ({ difficulty }) => {

@@ -2,9 +2,11 @@ import type { FindHomeQuery, FindHomeQueryVariables } from 'types/graphql'
 import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
 
 export const QUERY = gql`
-  query FindHomeQuery($id: Int!) {
-    home: home(id: $id) {
-      id
+  query FindHomeQuery {
+    mastery: getPercentMastery
+    testable: canUserTest
+    learned: getUserLearned {
+      answer
     }
   }
 `
@@ -20,7 +22,13 @@ export const Failure = ({
 )
 
 export const Success = ({
-  home,
+  mastery, testable, learned,
 }: CellSuccessProps<FindHomeQuery, FindHomeQueryVariables>) => {
-  return <div>{JSON.stringify(home)}</div>
+  return (
+  <div>
+    <p>Testable: {String(testable)}</p>
+    <p>Learned questions: {JSON.stringify(learned)}</p>
+    <p>Mastery percentage {String(mastery)}</p>
+  </div>
+  )
 }
