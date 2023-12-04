@@ -30,17 +30,15 @@ export const Success = ({
     <div>
       <p>Testable: {String(testable)}</p>
       {testable ? (
-      <button>Take test</button>
+        <button>Take test</button>
       ) : (
-      <p>Learn 5 questions to take a mastery test</p>
+        <p>Learn 5 questions to take a mastery test</p>
       )}
-      <p>
-        Learned questions:{' '}
-        {learned.map((answer, index) => (
-          <p key={index}>{answer.answer}</p>
-        ))}
-        {learned.length === 0 && <p>You have no learned questions yet</p>}
-      </p>
+      <p>Learned questions: </p>
+      {learned.map((answer, index) => (
+        <p key={index}>{answer.answer}</p>
+      ))}
+      {learned.length === 0 && <p>You have no learned questions yet</p>}
       <p>Mastery percentage {String(mastery)}</p>
     </div>
   )
