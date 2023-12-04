@@ -22,13 +22,26 @@ export const Failure = ({
 )
 
 export const Success = ({
-  mastery, testable, learned,
+  mastery,
+  testable,
+  learned,
 }: CellSuccessProps<FindHomeQuery, FindHomeQueryVariables>) => {
   return (
-  <div>
-    <p>Testable: {String(testable)}</p>
-    <p>Learned questions: {JSON.stringify(learned)}</p>
-    <p>Mastery percentage {String(mastery)}</p>
-  </div>
+    <div>
+      <p>Testable: {String(testable)}</p>
+      {testable ? (
+      <button>Take test</button>
+      ) : (
+      <p>Learn 5 questions to take a mastery test</p>
+      )}
+      <p>
+        Learned questions:{' '}
+        {learned.map((answer, index) => (
+          <p key={index}>{answer.answer}</p>
+        ))}
+        {learned.length === 0 && <p>You have no learned questions yet</p>}
+      </p>
+      <p>Mastery percentage {String(mastery)}</p>
+    </div>
   )
 }

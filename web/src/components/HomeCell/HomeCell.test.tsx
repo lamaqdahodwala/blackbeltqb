@@ -1,6 +1,7 @@
 import { render } from '@redwoodjs/testing/web'
+import { screen } from '@redwoodjs/testing/web'
 import { Loading, Empty, Failure, Success } from './HomeCell'
-import { standard } from './HomeCell.mock'
+import { noLearnedQuestions, noMasteryTest, standard } from './HomeCell.mock'
 
 // Generated boilerplate tests do not account for all circumstances
 // and can fail without adjustments, e.g. Float and DateTime types.
@@ -35,7 +36,30 @@ describe('HomeCell', () => {
 
   it('renders Success successfully', async () => {
     expect(() => {
-      render(<Success home={standard().home} />)
+      render(<Success {...standard()} />)
     }).not.toThrow()
+  })
+
+  it("renders the answers to the learned questions", async() => {
+    render(<Success {...standard()}></Success>)
+    expect(screen.getByText("Somalia")).toBeInTheDocument()
+    })
+
+  it("renders a message when there are no learned questions", async() => {
+    render(<Success {...noLearnedQuestions()}></Success>)
+    expect(screen.getByText("You have no learned questions yet")).toBeInTheDocument()
+    expect(screen.queryByText("Somalia")).not.toBeInTheDocument()
+  })
+
+  it("does not show a button and shows a message instead if you don't have a test available", async() => {
+    render(<Success {...noMasteryTest()}></Success>)
+    expect(screen.queryByRole("button")).not.toBeInTheDocument()
+    expect(screen.queryByText("Learn 5 questions to take a mastery test")).toBeInTheDocument()
+  })
+
+  it("shows a test button if you have a test available", async() => {
+    render(<Success {...standard()}></Success>)
+    expect(screen.getByRole("button").innerHTML).toEqual("Take test")
+    expect(screen.getByRole("button")).toBeInTheDocument()
   })
 })
